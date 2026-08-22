@@ -1,0 +1,90 @@
+// Declarative Jenkins pipeline for Goalyst (apps/web).
+// Requires Jenkins credentials: 'ghcr-credentials' (GitHub Container Registry) and,
+// for Term 1-2 deploys, 'deploy-vm-ssh' (SSH key to the deploy VM).
+
+pipeline {
+  agent any
+
+  environment {
+    IMAGE_NAME = "ghcr.io/${env.GITHUB_ORG}/goalyst-web"
+    IMAGE_TAG  = "${env.GIT_COMMIT.take(8)}"
+  }
+
+  options {
+    timeout(time: 20, unit: 'MINUTES')
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Install & Lint') {
+      steps {
+        dir('apps/web') {
+          sh 'npm ci'
+          sh 'npm run lint'
+        }
+      }
+    }
+
+    stage('Test') {
+      steps {
+        dir('apps/web') {
+          sh 'npm test -- --ci'
+        }
+      }
+    }
+
+    stage('Build') {
+      steps {
+        dir('apps/web') {
+          sh 'npm run build'
+        }
+      }
+    }
+
+    stage('Docker Build & Push') {
+      when { branch 'main' }
+      steps {
+        sh "docker build -f infra/docker/Dockerfile.web -t ${IMAGE_NAME}:${IMAGE_TAG} -t ${IMAGE_NAME}:latest ."
+        withCredentials([usernamePassword(credentialsId: 'ghcr-credentials', usernameVariable: 'GHCR_USER', passwordVariable: 'GHCR_TOKEN')]) {
+          sh 'echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin'
+          sh "docker push ${IMAGE_NAME}:${IMAGE_TAG}"
+          sh "docker push ${IMAGE_NAME}:latest"
+        }
+      }
+    }
+
+    stage('Deploy') {
+      when { branch 'main' }
+      steps {
+        // Term 1-2: SSH into the deploy VM and update the running container.
+        // Swap this stage for an ECS/Cloud Run deploy step at Term 3 — see docs/architecture/deployment.md.
+        sshagent(credentials: ['deploy-vm-ssh']) {
+          sh """
+            ssh -o StrictHostKeyChecking=no deploy@\$DEPLOY_HOST '
+              docker pull ${IMAGE_NAME}:${IMAGE_TAG} &&
+              docker compose -f infra/docker/docker-compose.yml up -d
+            '
+          """
+        }
+      }
+    }
+
+    stage('Health Check') {
+      when { branch 'main' }
+      steps {
+        sh 'curl -sf https://$DEPLOY_HOST/api/health || (echo "Health check failed" && exit 1)'
+      }
+    }
+  }
+
+  post {
+    failure {
+      echo 'Build or deploy failed — check the stage above for the first failure.'
+    }
+  }
+}

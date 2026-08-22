@@ -1,0 +1,716 @@
+<title>Goalyst Product Plan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --bg:#FBF9F2;
+    --bg-line:rgba(33,38,43,0.07);
+    --ink:#21262B;
+    --ink-soft:#525A63;
+    --ink-faint:#868F99;
+    --surface:#FFFFFF;
+    --surface-2:#F2EEE0;
+    --border:rgba(33,38,43,0.12);
+    --shadow:0 1px 2px rgba(33,38,43,0.06), 0 16px 36px -22px rgba(33,38,43,0.35);
+
+    --blue:#2058C7;    --blue-soft:rgba(32,88,199,0.10);
+    --pink:#C81F68;    --pink-soft:rgba(200,31,104,0.10);
+    --yellow:#A8710A;  --yellow-soft:rgba(168,113,10,0.13);
+    --green:#158A5C;   --green-soft:rgba(21,138,92,0.10);
+    --violet:#6B3FD1;  --violet-soft:rgba(107,63,209,0.10);
+    --red:#C23B26;     --red-soft:rgba(194,59,38,0.10);
+    --hl:rgba(255,201,0,0.38);
+
+    --font-display:"Bricolage Grotesque", system-ui, sans-serif;
+    --font-body:"Source Serif 4", Georgia, "Times New Roman", serif;
+    --font-mono:"IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    color-scheme:light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#181B22; --bg-line:rgba(255,255,255,0.07);
+      --ink:#F3F1E8; --ink-soft:#B7BEC7; --ink-faint:#7B838F;
+      --surface:#20242C; --surface-2:#262B34; --border:rgba(255,255,255,0.13);
+      --shadow:0 1px 2px rgba(0,0,0,0.4), 0 20px 50px -20px rgba(0,0,0,0.75);
+      --blue:#6C9BFF; --blue-soft:rgba(108,155,255,0.16);
+      --pink:#FF6FA8; --pink-soft:rgba(255,111,168,0.16);
+      --yellow:#FFCB4D; --yellow-soft:rgba(255,203,77,0.17);
+      --green:#4CDB9C; --green-soft:rgba(76,219,156,0.16);
+      --violet:#B18CFF; --violet-soft:rgba(177,140,255,0.16);
+      --red:#FF7A57; --red-soft:rgba(255,122,87,0.16);
+      --hl:rgba(255,203,77,0.24);
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#181B22; --bg-line:rgba(255,255,255,0.07);
+    --ink:#F3F1E8; --ink-soft:#B7BEC7; --ink-faint:#7B838F;
+    --surface:#20242C; --surface-2:#262B34; --border:rgba(255,255,255,0.13);
+    --shadow:0 1px 2px rgba(0,0,0,0.4), 0 20px 50px -20px rgba(0,0,0,0.75);
+    --blue:#6C9BFF; --blue-soft:rgba(108,155,255,0.16);
+    --pink:#FF6FA8; --pink-soft:rgba(255,111,168,0.16);
+    --yellow:#FFCB4D; --yellow-soft:rgba(255,203,77,0.17);
+    --green:#4CDB9C; --green-soft:rgba(76,219,156,0.16);
+    --violet:#B18CFF; --violet-soft:rgba(177,140,255,0.16);
+    --red:#FF7A57; --red-soft:rgba(255,122,87,0.16);
+    --hl:rgba(255,203,77,0.24);
+    color-scheme:dark;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} }
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font-body);-webkit-font-smoothing:antialiased;}
+  h1,h2,h3{font-family:var(--font-display);color:var(--ink);text-wrap:balance;margin:0;}
+  p{margin:0;}
+  a{color:inherit;}
+  :focus-visible{outline:2px solid var(--pink);outline-offset:3px;}
+  .num{font-variant-numeric:tabular-nums;}
+  mark.mark{background:var(--hl);color:inherit;padding:1px 5px;border-radius:3px;box-decoration-break:clone;-webkit-box-decoration-break:clone;}
+
+  .eyebrow{
+    font-family:var(--font-mono);font-size:12px;letter-spacing:0.14em;text-transform:uppercase;
+    color:var(--tab, var(--ink-faint));margin:0 0 16px;display:flex;align-items:center;gap:9px;font-weight:600;
+  }
+  .eyebrow::before{content:"";width:9px;height:9px;border-radius:3px;background:var(--tab, var(--ink-faint));flex-shrink:0;}
+
+  /* ---------- nav rail ---------- */
+  .railwrap{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--border);backdrop-filter:blur(6px);}
+  .rail{display:flex;align-items:center;gap:2px;overflow-x:auto;max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,48px);scrollbar-width:thin;}
+  .rail-brand{
+    font-family:var(--font-display);font-size:14px;font-weight:800;letter-spacing:0.01em;
+    background:linear-gradient(90deg,var(--blue),var(--violet) 55%,var(--pink));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
+    padding:13px 14px 13px 0;white-space:nowrap;border-right:1px solid var(--border);margin-right:6px;
+  }
+  .rail a{font-family:var(--font-mono);font-size:11.5px;color:var(--ink-faint);text-decoration:none;padding:13px 9px;white-space:nowrap;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;}
+  .rail a.active{color:var(--tab);border-bottom-color:var(--tab);}
+
+  /* ---------- sheets ---------- */
+  .sheet{position:relative;padding:76px clamp(20px,6vw,64px) 72px;border-bottom:1px solid var(--border);overflow:hidden;
+    background-image:repeating-linear-gradient(to bottom, transparent 0, transparent 36px, var(--bg-line) 37px);
+    border-top:5px solid var(--tab, transparent);}
+  .sheet::after{content:"";position:absolute;top:-140px;right:-140px;width:440px;height:440px;border-radius:50%;background:var(--tab, transparent);opacity:0.10;filter:blur(50px);pointer-events:none;}
+  .sheet-inner{max-width:760px;margin:0 auto;position:relative;}
+  .sheet-inner.wide{max-width:980px;}
+  .sheet-tag{position:absolute;top:22px;right:clamp(20px,6vw,64px);font-family:var(--font-mono);font-size:11px;color:var(--ink-faint);letter-spacing:0.08em;}
+
+  h2.sheet-title{font-size:clamp(26px,4vw,40px);font-weight:800;line-height:1.15;margin-bottom:20px;max-width:16ch;color:var(--tab, var(--ink));}
+  .lede{font-size:19px;line-height:1.7;color:var(--ink-soft);max-width:62ch;}
+  .lede + .lede{margin-top:14px;}
+  .callout{margin-top:26px;border-left:3px solid var(--tab, var(--red));padding:4px 0 4px 18px;font-family:var(--font-display);font-size:19px;font-weight:700;line-height:1.5;max-width:56ch;color:var(--ink);}
+
+  /* ---------- cover ---------- */
+  .cover{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding-top:56px;}
+  .stamp{position:absolute;top:34px;right:clamp(20px,6vw,64px);border:2px dashed var(--pink);color:var(--pink);font-family:var(--font-mono);font-size:11px;letter-spacing:0.12em;padding:7px 12px;transform:rotate(6deg);text-transform:uppercase;font-weight:700;}
+  .cover h1{font-size:clamp(56px,12vw,128px);font-weight:800;line-height:0.92;letter-spacing:-0.01em;
+    background:linear-gradient(100deg,var(--blue) 10%,var(--violet) 50%,var(--pink) 90%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
+  .cover .tagline{font-family:var(--font-body);font-style:italic;font-weight:600;font-size:clamp(19px,2.4vw,25px);color:var(--ink);margin-top:18px;max-width:34ch;}
+  .cover .lede{margin-top:26px;}
+  .ticket{margin-top:40px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:16px 0;display:flex;flex-wrap:wrap;gap:24px 40px;}
+  .ticket-item{display:flex;flex-direction:column;gap:4px;}
+  .ticket-item .k{font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);}
+  .ticket-item .v{font-family:var(--font-mono);font-size:14px;color:var(--ink);font-weight:600;}
+
+  /* ---------- persona / pillar grid ---------- */
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border);margin-top:8px;border:1px solid var(--border);}
+  @media (max-width:640px){ .grid{grid-template-columns:1fr;} }
+  .grid-cell{background:var(--surface);padding:24px 26px;}
+  .grid-cell .label{font-family:var(--font-mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--tab);margin-bottom:8px;font-weight:600;}
+  .grid-cell h3{font-size:19px;font-weight:700;margin-bottom:9px;}
+  .grid-cell p{font-size:14.5px;line-height:1.6;color:var(--ink-soft);}
+
+  /* ---------- table ---------- */
+  table.marks{width:100%;border-collapse:collapse;margin-top:8px;font-size:14.5px;}
+  table.marks th{font-family:var(--font-mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-faint);text-align:left;padding:0 14px 12px;border-bottom:2px solid var(--tab);font-weight:600;}
+  table.marks td{padding:16px 14px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.6;color:var(--ink-soft);}
+  table.marks td.subj{font-family:var(--font-display);font-weight:700;color:var(--ink);white-space:nowrap;font-size:15px;}
+  table.marks tr:last-child td{border-bottom:none;}
+  .chip{display:inline-block;font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.06em;text-transform:uppercase;padding:3px 9px;border-radius:4px;font-weight:700;white-space:nowrap;}
+  .chip.done{background:var(--green-soft);color:var(--green);}
+  .chip.next{background:var(--yellow-soft);color:var(--yellow);}
+  .chip.later{background:var(--surface-2);color:var(--ink-faint);}
+  .tablewrap{overflow-x:auto;}
+
+  /* ---------- timetable ---------- */
+  .timetable{margin-top:8px;border-top:1px solid var(--border);}
+  .period{display:grid;grid-template-columns:88px 1fr;gap:20px;padding:18px 0;border-bottom:1px solid var(--border);}
+  .period .when{font-family:var(--font-mono);font-size:12px;color:var(--tab);padding-top:2px;font-weight:600;}
+  .period h3{font-size:16.5px;font-weight:700;margin-bottom:5px;}
+  .period p{font-size:14.5px;color:var(--ink-soft);line-height:1.6;}
+
+  /* ---------- hook list ---------- */
+  .hooks{margin-top:8px;display:flex;flex-direction:column;}
+  .hook{display:grid;grid-template-columns:44px 1fr;gap:16px;padding:20px 0;border-bottom:1px solid var(--border);}
+  .hook:first-child{border-top:1px solid var(--border);}
+  .hook .n{font-family:var(--font-display);font-size:20px;font-weight:800;color:var(--tab);padding-top:0;}
+  .hook h3{font-size:16.5px;font-weight:700;margin-bottom:5px;}
+  .hook p{font-size:14.5px;color:var(--ink-soft);line-height:1.6;}
+
+  /* ---------- money / card row ---------- */
+  .moneyrow{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-top:8px;}
+  @media (max-width:760px){ .moneyrow{grid-template-columns:1fr;} }
+  .money-card{background:var(--surface);padding:22px 22px 24px;}
+  .money-card .tier{font-family:var(--font-mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--tab);margin-bottom:10px;font-weight:600;}
+  .money-card .price{font-family:var(--font-display);font-size:24px;font-weight:800;margin-bottom:10px;}
+  .money-card p{font-size:13.5px;color:var(--ink-soft);line-height:1.6;}
+
+  /* ---------- gtm list ---------- */
+  ul.gtm{margin:8px 0 0;padding:0;}
+  .gtm li{list-style:none;padding:16px 0 16px 30px;position:relative;border-bottom:1px solid var(--border);font-size:15px;line-height:1.6;color:var(--ink-soft);}
+  .gtm li:first-child{border-top:1px solid var(--border);}
+  .gtm li::before{content:"—";position:absolute;left:0;color:var(--tab);font-family:var(--font-mono);font-weight:700;}
+
+  /* ---------- naming ballot ---------- */
+  .ballot{display:flex;flex-direction:column;gap:1px;background:var(--border);border:1px solid var(--border);margin-top:8px;}
+  .ballot-item{background:var(--surface);padding:20px 22px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;}
+  .ballot-item.rec{background:var(--violet-soft);}
+  .ballot-item .name{font-family:var(--font-display);font-size:22px;font-weight:800;}
+  .ballot-item .why{font-size:14px;color:var(--ink-soft);line-height:1.55;margin-top:5px;max-width:52ch;}
+  .ballot-item .mark2{font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.06em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--violet);color:var(--violet);white-space:nowrap;margin-top:2px;border-radius:3px;font-weight:700;}
+  .avoidbox{margin-top:22px;padding:16px 18px;background:var(--surface-2);border-left:3px solid var(--red);}
+  .avoidbox p{font-size:13.5px;color:var(--ink-soft);line-height:1.65;}
+  .avoidbox .k{font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:var(--red);margin-bottom:8px;font-weight:700;}
+  .correction{margin-top:14px;padding:14px 16px;background:var(--yellow-soft);border-left:3px solid var(--yellow);font-size:13px;color:var(--ink-soft);line-height:1.6;}
+  .correction strong{color:var(--ink);}
+  .footnote{margin-top:18px;font-size:12.5px;color:var(--ink-faint);font-style:italic;}
+
+  /* ---------- phone mockups ---------- */
+  .phones{display:flex;gap:36px;flex-wrap:wrap;justify-content:center;margin-top:34px;}
+  .phone-block{display:flex;flex-direction:column;align-items:center;gap:14px;max-width:260px;}
+  .phone-caption{font-family:var(--font-mono);font-size:12px;color:var(--ink-soft);text-align:center;line-height:1.55;}
+  .phone{width:246px;height:500px;background:#10131C;border-radius:34px;padding:9px;box-shadow:var(--shadow),0 0 0 1px rgba(0,0,0,0.4);flex-shrink:0;}
+  .phone-screen{width:100%;height:100%;background:#0F1730;border-radius:26px;overflow:hidden;display:flex;flex-direction:column;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#F8FAFC;}
+  .phone-notch{height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .phone-notch i{width:52px;height:5px;background:rgba(255,255,255,0.25);border-radius:999px;display:block;}
+  .phone-topbar{padding:8px 13px;display:flex;align-items:center;gap:7px;border-bottom:1px solid rgba(255,255,255,0.08);flex-shrink:0;}
+  .phone-topbar .pdot{width:6px;height:6px;border-radius:50%;background:#6366F1;box-shadow:0 0 0 3px rgba(99,102,241,0.28);}
+  .phone-topbar span{font-size:9.5px;letter-spacing:0.07em;text-transform:uppercase;color:#A6B3D6;font-weight:700;}
+  .phone-body{flex:1;overflow:hidden;padding:11px 11px 6px;display:flex;flex-direction:column;gap:7px;}
+  .pbubble{max-width:85%;padding:7px 10px;border-radius:9px;font-size:10.8px;line-height:1.4;}
+  .pbubble.bot{align-self:flex-start;background:#1F2E57;border:1px solid rgba(255,255,255,0.1);border-top-left-radius:2px;}
+  .pbubble.user{align-self:flex-end;background:rgba(99,102,241,0.22);border:1px solid #6366F1;border-top-right-radius:2px;}
+  .pqr{display:flex;gap:5px;flex-wrap:wrap;margin-top:2px;}
+  .pqr span{border:1px solid #F59E0B;color:#F59E0B;font-size:8.8px;font-weight:700;padding:3px 8px;border-radius:999px;}
+  .pqr span.picked{background:#F59E0B;color:#1A1204;}
+  .phone-input{margin:0 11px 11px;padding:8px 11px;border-radius:9px;background:#1F2E57;border:1px solid rgba(255,255,255,0.1);font-size:10px;color:#7C86A6;flex-shrink:0;}
+  .pgoal{background:#1F2E57;border:1px solid rgba(255,255,255,0.1);border-radius:9px;padding:9px 11px;margin-top:2px;}
+  .pgoal .pname{font-weight:800;font-size:11.5px;margin-bottom:7px;}
+  .pgoal .pbar{height:5px;border-radius:999px;background:#0F1730;overflow:hidden;margin-bottom:8px;}
+  .pgoal .pbar i{display:block;height:100%;background:linear-gradient(90deg,#6366F1,#F59E0B);width:25%;}
+  .pms{display:flex;align-items:center;gap:6px;font-size:9.8px;padding:2.5px 0;color:#A6B3D6;}
+  .pms .c{width:11px;height:11px;border-radius:4px;border:1.4px solid rgba(255,255,255,0.28);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:7.5px;}
+  .pms.done .c{background:#10B981;border-color:#10B981;color:#06210C;}
+  .pms.done span{text-decoration:line-through;color:#7C86A6;}
+
+  /* ---------- stack list ---------- */
+  .stacknote{margin-top:14px;font-size:13.5px;color:var(--ink-faint);}
+
+  /* ---------- closing ---------- */
+  .closing{min-height:70vh;display:flex;flex-direction:column;justify-content:center;}
+  .signoff{margin-top:44px;padding-top:20px;border-top:1px solid var(--border);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);}
+  .steplist{margin-top:10px;}
+  .step{display:grid;grid-template-columns:26px 1fr;gap:14px;padding:14px 0;}
+  .step .box{width:16px;height:16px;border:1.5px solid var(--tab);margin-top:3px;flex-shrink:0;border-radius:3px;}
+  .step p{font-size:15.5px;color:var(--ink-soft);line-height:1.6;}
+  .step strong{color:var(--ink);}
+</style>
+
+<div class="railwrap">
+  <nav class="rail" id="rail">
+    <span class="rail-brand">GOALYST</span>
+    <a href="#s00" style="--tab:var(--blue)">00 Cover</a>
+    <a href="#s01" style="--tab:var(--red)">01 Problem</a>
+    <a href="#s02" style="--tab:var(--violet)">02 Thesis</a>
+    <a href="#s03" style="--tab:var(--green)">03 Students</a>
+    <a href="#s04" style="--tab:var(--pink)">04 Landscape</a>
+    <a href="#s05" style="--tab:var(--yellow)">05 Subjects</a>
+    <a href="#s06" style="--tab:var(--blue)">06 On screen</a>
+    <a href="#s07" style="--tab:var(--red)">07 Timetable</a>
+    <a href="#s08" style="--tab:var(--violet)">08 Roadmap</a>
+    <a href="#s09" style="--tab:var(--green)">09 Tech stack</a>
+    <a href="#s10" style="--tab:var(--pink)">10 Hooks</a>
+    <a href="#s11" style="--tab:var(--yellow)">11 Money</a>
+    <a href="#s12" style="--tab:var(--blue)">12 Metrics</a>
+    <a href="#s13" style="--tab:var(--red)">13 First 100</a>
+    <a href="#s14" style="--tab:var(--violet)">14 Team</a>
+    <a href="#s15" style="--tab:var(--green)">15 Naming</a>
+    <a href="#s16" style="--tab:var(--pink)">16 Next</a>
+  </nav>
+</div>
+
+<section class="sheet cover" id="s00" style="--tab:var(--blue)">
+  <div class="stamp">For team review</div>
+  <div class="sheet-inner">
+    <p class="eyebrow">Roll No. GY&#8209;2026 &middot; Product plan</p>
+    <h1>Goalyst</h1>
+    <p class="tagline">Set the goal. Get the plan. Show up daily.</p>
+    <p class="lede">The full plan for turning the goal-coach idea into a real product for Indian students &mdash; not a weekend build, a thing you actually publish and keep building. Recommended name, the complete structure, the app on screen, the competition, the tech it runs on, the numbers that matter, and what it takes to ship.</p>
+    <div class="ticket">
+      <div class="ticket-item"><span class="k">Candidate</span><span class="v">Yasar Khan</span></div>
+      <div class="ticket-item"><span class="k">Status</span><span class="v">In development</span></div>
+      <div class="ticket-item"><span class="k">Core build</span><span class="v">Live today, $0/mo</span></div>
+      <div class="ticket-item"><span class="k">Target</span><span class="v">Branded relaunch, ~2 weeks</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="sheet" id="s01" style="--tab:var(--red)">
+  <span class="sheet-tag">Sheet 01 / 16</span>
+  <div class="sheet-inner">
+    <p class="eyebrow">The problem</p>
+    <h2 class="sheet-title">Every serious student is running their prep off five broken tools</h2>
+    <p class="lede">The notes live in a Telegram channel. The habit tracker doesn't know what a NEET syllabus is &mdash; it just wants a streak. Doubts go to YouTube comments or get shelved for the next coaching class. The study plan lives in a diary nobody re-opens after day four. And real AI tutoring sits behind a subscription most families won't justify for one subject, let alone six.</p>
+    <p class="lede">None of these tools were built for a student chasing <mark class="mark">one specific, dated goal</mark>.</p>
+    <p class="callout">Nobody owns the whole loop: plan the goal, make the student practice like it's the real exam, and show up when motivation runs out on its own.</p>
+  </div>
+</section>
+
+<section class="sheet" id="s02" style="--tab:var(--violet)">
+  <span class="sheet-tag">Sheet 02 / 16</span>
+  <div class="sheet-inner">
+    <p class="eyebrow">What Goalyst is</p>
+    <h2 class="sheet-title">One sentence, and then what it isn't</h2>
+    <p class="lede" style="font-family:var(--font-display);font-weight:700;font-size:23px;color:var(--ink);line-height:1.45;">Goalyst turns any goal &mdash; an exam, a skill, a habit &mdash; into <mark class="mark">a dated plan, a daily practice loop, and a coach</mark> that answers the same question for the hundredth time without getting tired.</p>
+    <div class="tablewrap" style="margin-top:32px;">
+      <table class="marks">
+        <tr><th>Isn't</th><th>Is</th></tr>
+        <tr><td class="subj" style="color:var(--ink-faint);font-weight:600;">Another PDF library</td><td>A goal-first planner that builds the syllabus timeline for you</td></tr>
+        <tr><td class="subj" style="color:var(--ink-faint);font-weight:600;">A generic habit app</td><td>Milestones and streaks tied to one named, dated goal</td></tr>
+        <tr><td class="subj" style="color:var(--ink-faint);font-weight:600;">A question-bank dump</td><td>Full timed mocks with the real marking scheme, then a full review</td></tr>
+        <tr><td class="subj" style="color:var(--ink-faint);font-weight:600;">A paid-only AI tutor</td><td>A coach that's genuinely free at the core, honest about what's rule-based today</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="sheet" id="s03" style="--tab:var(--green)">
+  <span class="sheet-tag">Sheet 03 / 16</span>
+  <div class="sheet-inner wide">
+    <p class="eyebrow">Who it's for</p>
+    <h2 class="sheet-title">Four kinds of student, one loop underneath</h2>
+    <div class="grid">
+      <div class="grid-cell">
+        <p class="label">Profile A</p>
+        <h3>The NEET / JEE aspirant</h3>
+        <p>Six subjects, one shot a year, a syllabus too big to hold in one head. Needs a milestone plan that doesn't collapse the first time they fall behind, and mocks with real negative marking.</p>
+      </div>
+      <div class="grid-cell">
+        <p class="label">Profile B</p>
+        <h3>The state-exam aspirant</h3>
+        <p>SSC, state police, prep material scattered across ten Telegram channels, a pattern that changes by state. Needs a tool that adapts to their exact exam &mdash; a state-wise library of eligibility, pattern, and previous papers, not a NEET-shaped tool wearing a different label.</p>
+      </div>
+      <div class="grid-cell">
+        <p class="label">Profile C</p>
+        <h3>The skill-builder</h3>
+        <p>Learning to code, design, or communicate &mdash; no external exam date forcing urgency, so momentum usually dies in week two. Needs milestones that manufacture their own deadlines.</p>
+      </div>
+      <div class="grid-cell">
+        <p class="label">Profile D</p>
+        <h3>The habit-builder</h3>
+        <p>Not studying for anything specific, just trying to become someone who follows through. Needs a streak that feels earned, not gamified for its own sake.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sheet" id="s04" style="--tab:var(--pink)">
+  <span class="sheet-tag">Sheet 04 / 16</span>
+  <div class="sheet-inner wide">
+    <p class="eyebrow">Where Goalyst sits</p>
+    <h2 class="sheet-title">The market already has players &mdash; none of them own the whole loop</h2>
+    <p class="lede">Every one of these does one piece of what a serious student needs. None of them do all three at once: plan the goal, practice like it's real, and coach the gap in between.</p>
+    <div class="tablewrap" style="margin-top:24px;">
+      <table class="marks">
+        <tr><th>Player</th><th>Strong at</th><th>Missing for this student</th></tr>
+        <tr>
+          <td class="subj">Testbook, Adda247</td>
+          <td>Deep mock-test and question-bank libraries across exams.</td>
+          <td>No dated milestone plan, no coach to ask when a student falls behind &mdash; a mock is just a mock.</td>
+        </tr>
+        <tr>
+          <td class="subj">Unacademy, PhysicsWallah</td>
+          <td>Video lectures and live classes at real production quality.</td>
+          <td>Priced for a full course, not a free daily loop &mdash; and it's still one-way, not a coach that answers back.</td>
+        </tr>
+        <tr>
+          <td class="subj">Habitica, Streaks</td>
+          <td>Genuinely good streak and habit mechanics.</td>
+          <td>Has never heard of a NEET syllabus &mdash; a streak with no exam behind it doesn't survive a bad week.</td>
+        </tr>
+        <tr>
+          <td class="subj">ChatGPT / Gemini, ad hoc</td>
+          <td>Free, flexible, answers almost anything.</td>
+          <td>Forgets the goal every new chat, no milestone plan, no marking-scheme mocks &mdash; a tool the student has to drive, not one built around them.</td>
+        </tr>
+      </table>
+    </div>
+    <p class="callout">The edge isn't a better mock engine or a smarter chatbot on its own &mdash; it's the one app that plans the goal, runs the practice, and coaches the gap, without asking a family to stitch four subscriptions together.</p>
+  </div>
+</section>
+
+<section class="sheet" id="s05" style="--tab:var(--yellow)">
+  <span class="sheet-tag">Sheet 05 / 16</span>
+  <div class="sheet-inner wide">
+    <p class="eyebrow">Core subjects</p>
+    <h2 class="sheet-title">What the product is actually made of</h2>
+    <div class="tablewrap">
+      <table class="marks">
+        <tr><th>Subject</th><th>What it does</th><th>Status</th></tr>
+        <tr>
+          <td class="subj">Goal Wizard</td>
+          <td>Turns any goal into a dated, category-aware milestone plan in under two minutes &mdash; chat-driven or form-driven.</td>
+          <td><span class="chip done">Built</span></td>
+        </tr>
+        <tr>
+          <td class="subj">Mock Test Engine</td>
+          <td>Timed, real marking-scheme practice &mdash; NEET's +4/&minus;1/0, a state police exam's own scheme &mdash; then a full right/wrong review.</td>
+          <td><span class="chip done">Built</span></td>
+        </tr>
+        <tr>
+          <td class="subj">Exam &amp; Papers Library</td>
+          <td>Browse by state and category &mdash; Delhi Police, UP Police, SSC, and more &mdash; to see eligibility, exam pattern, and every previous year paper, each one loadable straight into a real mock.</td>
+          <td><span class="chip later">Planned</span></td>
+        </tr>
+        <tr>
+          <td class="subj">Coach Chat</td>
+          <td>Rule-based today, asks the right follow-up questions, always free at this tier. Genuine memory-holding AI is the paid phase below.</td>
+          <td><span class="chip next">Upgrading</span></td>
+        </tr>
+        <tr>
+          <td class="subj">Streak &amp; Habit Log</td>
+          <td>Daily check-ins per goal, longest-streak tracking across every goal at once, no guilt-trip copy.</td>
+          <td><span class="chip done">Built</span></td>
+        </tr>
+        <tr>
+          <td class="subj">Progress &amp; Review</td>
+          <td>One glance at what's on pace and what's slipping, plus a weekly recap of the last seven days.</td>
+          <td><span class="chip next">Expanding</span></td>
+        </tr>
+        <tr>
+          <td class="subj">Peer Leaderboard</td>
+          <td>Optional, opt-in study groups and friendly rank comparison &mdash; peer pressure outperforms push notifications.</td>
+          <td><span class="chip later">Planned</span></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="sheet" id="s06" style="--tab:var(--blue)">
+  <span class="sheet-tag">Sheet 06 / 16</span>
+  <div class="sheet-inner wide">
+    <p class="eyebrow">The product, on screen</p>
+    <h2 class="sheet-title">What it actually looks like in a student's hand</h2>
+    <p class="lede">Screens from the app as it's built and running today &mdash; not a mockup of a future idea.</p>
+    <div class="phones">
+      <div class="phone-block">
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="phone-notch"><i></i></div>
+            <div class="phone-topbar"><span class="pdot"></span><span>Coach &middot; Free</span></div>
+            <div class="phone-body">
+              <div class="pbubble bot">Hey — tell me a goal, or ask me anything about your prep.</div>
+              <div class="pbubble user">I'm 10 days behind on Physics rotation topics. What do I do?</div>
+              <div class="pbubble bot">Behind just means the next block matters more, not that the plan's broken. Clear Rotation in one focused 3-day sprint before touching anything else. Want me to shift your milestone dates to fit that?</div>
+              <div class="pqr"><span class="picked">Yes, shift dates</span><span>No, I'll catch up</span></div>
+            </div>
+            <div class="phone-input">Ask anything&hellip;</div>
+          </div>
+        </div>
+        <p class="phone-caption">Ask a real question, get a real next step &mdash; not a canned pep talk.</p>
+      </div>
+      <div class="phone-block">
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="phone-notch"><i></i></div>
+            <div class="phone-topbar"><span class="pdot"></span><span>New Goal</span></div>
+            <div class="phone-body">
+              <div class="pbubble bot">What kind of goal is this?</div>
+              <div class="pqr"><span class="picked">Exam prep</span><span>Skill</span><span>Fitness</span><span>Habit</span></div>
+              <div class="pbubble bot">And by when do you want to hit it?</div>
+              <div class="pbubble user">11 May 2027</div>
+              <div class="pbubble bot">Plan ready — 4 milestones between now and then.</div>
+              <div class="pgoal">
+                <div class="pname">Crack NEET</div>
+                <div class="pbar"><i></i></div>
+                <div class="pms done"><span class="c">&#10003;</span><span>Cover the full syllabus once</span></div>
+                <div class="pms"><span class="c"></span><span>Complete two full mock tests</span></div>
+                <div class="pms"><span class="c"></span><span>Revise every weak topic</span></div>
+                <div class="pms"><span class="c"></span><span>Final revision week</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="phone-caption">One goal in, a dated milestone plan out &mdash; in under two minutes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sheet" id="s07" style="--tab:var(--red)">
+  <span class="sheet-tag">Sheet 07 / 16</span>
+  <div class="sheet-inner">
+    <p class="eyebrow">The daily timetable</p>
+    <h2 class="sheet-title">What a day with Goalyst actually looks like</h2>
+    <div class="timetable">
+      <div class="period"><div class="when">Morning</div><div><h3>One-line ping</h3><p>What's due today, across every goal &mdash; not a wall of notifications, one line.</p></div></div>
+      <div class="period"><div class="when">Daytime</div><div><h3>Practice block</h3><p>A mock test, a milestone task, or focused study time &mdash; whatever today's step in the plan calls for.</p></div></div>
+      <div class="period"><div class="when">Anytime</div><div><h3>Doubt clearing</h3><p>Ask the coach instead of losing an hour to a forum thread that's half wrong anyway.</p></div></div>
+      <div class="period"><div class="when">Evening</div><div><h3>Thirty-second log</h3><p>Check in, streak updates, done. No journaling required.</p></div></div>
+      <div class="period" style="border-bottom:none;"><div class="when">Sunday</div><div><h3>Weekly review</h3><p>What's on pace, what's behind, one adjustment to make before Monday.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sheet" id="s08" style="--tab:var(--violet)">
+  <span class="sheet-tag">Sheet 08 / 16</span>
+  <div class="sheet-inner wide">
+    <p class="eyebrow">Term-wise progress report</p>
+    <h2 class="sheet-title">The roadmap, with real cost attached</h2>
+    <div class="tablewrap">
+      <table class="marks">
+        <tr><th>Term</th><th>What ships</th><th>Cost</th><th>Status</th></tr>
+        <tr>
+          <td class="subj">Term 1<br><span style="font-family:var(--font-mono);font-weight:400;font-size:11px;color:var(--ink-faint);">Today</span></td>
+          <td>Goal wizard, milestone plans, streak tracking, mood log, rule-based coach &mdash; already built and tested.</td>
+          <td class="num">$0/mo</td>
+          <td><span class="chip done">Done</span></td>
+        </tr>
+        <tr>
+          <td class="subj">Term 2<br><span style="font-family:var(--font-mono);font-weight:400;font-size:11px;color:var(--ink-faint);">Weeks 2&ndash;4</span></td>
+          <td>Rebrand and polish, accounts with cross-device sync, wider mock-test banks across NEET / JEE / SSC / state police, plus a state-wise exam &amp; previous-papers library.</td>
+          <td class="num">$0&ndash;20/mo</td>
+          <td><span class="chip next">Next</span></td>
+        </tr>
+        <tr>
+          <td class="subj">Term 3<br><span style="font-family:var(--font-mono);font-weight:400;font-size:11px;color:var(--ink-faint);">Month 2&ndash;3</span></td>
+          <td>Real AI coach backend &mdash; the Claude API held server-side, actual memory of a student's goals and history.</td>
+          <td class="num">$20&ndash;100/mo</td>
+          <td><span class="chip later">Planned</span></td>
+        </tr>
+        <tr>
+          <td class="subj">Term 4<br><span style="font-family:var(--font-mono);font-weight:400;font-size:11px;color:var(--ink-faint);">Month 4+</span></td>
+          <td>Premium subscription tier, native app wrap for the Play Store and App Store, first coaching-institute pilot.</td>
+          <td class="num">$100&ndash;500+/mo<br>+ $25 one-time, $99/yr</td>
+          <td><span class="chip later">Planned</span></td>
+        </tr>
+      </table>
+    </div>
+    <p class="footnote">Infra estimates assume Vercel + Supabase/Firebase free-to-low tiers through Term 2, scaling with real user counts from Term 3 onward.</p>
+  </div>
+</section>
+
+<section class="sheet" id="s09" style="--tab:var(--green)">
+  <span class="sheet-tag">Sheet 09 / 16</span>
+  <div class="sheet-inner wide">
+    <p class="eyebrow">What it's built on</p>
+    <h2 class="sheet-title">The tech stack, and why each piece earns its place</h2>
+    <p class="lede">Every layer below has a real free tier &mdash; Term 1 was built on all of them without a hosting bill. The stack doesn't change for Term 2, it just gets used harder.</p>
+    <div class="tablewrap" style="margin-top:24px;">
+      <table class="marks">
+        <tr><th>Layer</th><th>Tool</th><th>Why this one</th></tr>
+        <tr>
+          <td class="subj">Frontend</td>
+          <td>React (Next.js)</td>
+          <td>One codebase for the web app today, with a component layer that carries over cleanly if it's wrapped into a native app later.</td>
+        </tr>
+        <tr>
+          <td class="subj">Backend &amp; API</td>
+          <td>Next.js API routes</td>
+          <td>Serverless by default &mdash; no separate backend to run or pay for at this scale, and it deploys with the same command as the frontend.</td>
+        </tr>
+        <tr>
+          <td class="subj">Database &amp; auth</td>
+          <td>Supabase (Postgres)</td>
+          <td>A free tier that comfortably covers Term 1&ndash;2, relational tables that fit goals &rarr; milestones &rarr; mocks naturally, and row-level security to keep one student's data walled off from another's.</td>
+        </tr>
+        <tr>
+          <td class="subj">AI coach<br><span style="font-family:var(--font-mono);font-weight:400;font-size:11px;color:var(--ink-faint);">Term 3</span></td>
+          <td>Claude API, server-side</td>
+          <td>Matches the Term 3 upgrade already on the roadmap &mdash; kept server-side so the API key and prompt logic never ship to the client.</td>
+        </tr>
+        <tr>
+          <td class="subj">Hosting &amp; deploys</td>
+          <td>Vercel</td>
+          <td>Zero-config deploys straight from git, free through Term 2, and the same platform this plan's cost estimates are already built around.</td>
+        </tr>
+        <tr>
+          <td class="subj">Payments<br><span style="font-family:var(--font-mono);font-weight:400;font-size:11px;color:var(--ink-faint);">Term 4</span></td>
+          <td>Razorpay</td>
+          <td>Built for &#8377; subscriptions and UPI &mdash; the standard choice for an India-first product, where Stripe's coverage falls short.</td>
+        </tr>
+        <tr>
+          <td class="subj">Native wrap<br><span style="font-family:var(--font-mono);font-weight:400;font-size:11px;color:var(--ink-faint);">Term 4</span></td>
+          <td>Capacitor</td>
+          <td>Wraps the existing web app for the Play Store and App Store without a separate native rewrite.</td>
+        </tr>
+      </table>
+    </div>
+    <p class="callout">Term 3 is the first time a real bill shows up &mdash; and it's only for AI coach usage, not for anything else in this table.</p>
+  </div>
+</section>
+
+<section class="sheet" id="s10" style="--tab:var(--pink)">
+  <span class="sheet-tag">Sheet 10 / 16</span>
+  <div class="sheet-inner">
+    <p class="eyebrow">Why a student opens it twice</p>
+    <h2 class="sheet-title">The five things that actually earn a second visit</h2>
+    <div class="hooks">
+      <div class="hook"><div class="n">01</div><div><h3>Under two minutes to a real plan</h3><p>No blank-page paralysis &mdash; the app proposes dated milestones the moment a goal is named.</p></div></div>
+      <div class="hook"><div class="n">02</div><div><h3>Mocks with no mercy</h3><p>Real timer, real negative marking, so exam day isn't the first time the pressure feels real.</p></div></div>
+      <div class="hook"><div class="n">03</div><div><h3>A coach that's free forever at the core</h3><p>Not a seven-day trial disguised as generosity.</p></div></div>
+      <div class="hook"><div class="n">04</div><div><h3>Progress you can actually see</h3><p>Percentage bars and streak counts, not vague encouragement copy.</p></div></div>
+      <div class="hook"><div class="n">05</div><div><h3>Built by one person who's actually building it</h3><p>Not a faceless ed-tech company &mdash; a real trust signal worth saying out loud in early marketing.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sheet" id="s11" style="--tab:var(--yellow)">
+  <span class="sheet-tag">Sheet 11 / 16</span>
+  <div class="sheet-inner wide">
+    <p class="eyebrow">How it becomes a business</p>
+    <h2 class="sheet-title">Freemium first, two paths to real revenue later</h2>
+    <div class="moneyrow">
+      <div class="money-card"><p class="tier">Free &mdash; always</p><p class="price">₹0</p><p>Goal planning, milestone tracking, streaks, limited mock tests, rule-based coach. This tier has to stay genuinely useful, or the trust story falls apart.</p></div>
+      <div class="money-card"><p class="tier">Premium &mdash; Term 3+</p><p class="price">₹99&ndash;199/mo</p><p>Unlimited mocks across every exam, the real AI coach with memory, priority doubt-solving, full weekly analytics. Discounted annual plan.</p></div>
+      <div class="money-card"><p class="tier">Institute license &mdash; later</p><p class="price">Negotiated</p><p>White-label or co-branded version sold to coaching centers and schools, once there's real usage data to point to.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sheet" id="s12" style="--tab:var(--blue)">
+  <span class="sheet-tag">Sheet 12 / 16</span>
+  <div class="sheet-inner wide">
+    <p class="eyebrow">How we'll know it's working</p>
+    <h2 class="sheet-title">The numbers that matter before the ones that flatter</h2>
+    <p class="lede">Signups are easy to inflate and easy to celebrate for the wrong reason. These are the five that actually say whether the loop is landing.</p>
+    <div class="tablewrap" style="margin-top:24px;">
+      <table class="marks">
+        <tr><th>Metric</th><th>Target by end of Term 2</th><th>Why it matters</th></tr>
+        <tr>
+          <td class="subj">Day&#8209;7 retention</td>
+          <td class="num">&ge;15%</td>
+          <td>Proves the daily loop, not just the two-minute wizard, is worth coming back for.</td>
+        </tr>
+        <tr>
+          <td class="subj">Goals with a 7&#8209;day streak</td>
+          <td class="num">&ge;25%</td>
+          <td>The honest measure of the habit landing &mdash; not vanity signups with a goal nobody's touching.</td>
+        </tr>
+        <tr>
+          <td class="subj">Mocks / active user / month</td>
+          <td class="num">&ge;2</td>
+          <td>Confirms the practice engine is real prep, not something opened once out of curiosity.</td>
+        </tr>
+        <tr>
+          <td class="subj">Coach messages / active user / week</td>
+          <td class="num">&ge;3</td>
+          <td>Proves the coach is replacing a forum tab, not sitting there as a demo feature.</td>
+        </tr>
+        <tr>
+          <td class="subj">Free &rarr; premium conversion</td>
+          <td class="num">3&ndash;5%</td>
+          <td>Standard freemium benchmark, once Premium exists in Term 3 &mdash; keeps the free tier's promise honest.</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="sheet" id="s13" style="--tab:var(--red)">
+  <span class="sheet-tag">Sheet 13 / 16</span>
+  <div class="sheet-inner">
+    <p class="eyebrow">First 100 users</p>
+    <h2 class="sheet-title">Where the first real testers come from</h2>
+    <ul class="gtm">
+      <li>Personal network first &mdash; the DevOps/tech community, and anyone with a student in the family. Ten honest testers before anything public.</li>
+      <li>Short demo clips of the actual two-minute "goal to plan" moment, posted as Reels/Shorts &mdash; that moment is the whole pitch on its own.</li>
+      <li>Campus and coaching WhatsApp/Telegram groups, asked into directly &mdash; never dropped in unannounced.</li>
+      <li>A referral bonus for bringing a study partner in &mdash; both sides get something, no cash required.</li>
+      <li>The free-forever core as the wedge &mdash; nobody has to trust a payment page just to try it out.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="sheet" id="s14" style="--tab:var(--violet)">
+  <span class="sheet-tag">Sheet 14 / 16</span>
+  <div class="sheet-inner wide">
+    <p class="eyebrow">Who's building this</p>
+    <h2 class="sheet-title">One builder today, three gaps worth closing before it scales</h2>
+    <p class="lede">Right now this is one person &mdash; product, prep content, and code all in the same head. That's how Term 1 got built for $0. It's also the ceiling on how far Term 2 onward can go alone.</p>
+    <div class="moneyrow">
+      <div class="money-card"><p class="tier">Design &amp; frontend partner</p><p>Part-time is enough. Carries this visual identity into the real app for the Term 2 rebrand instead of it staying a plan.</p></div>
+      <div class="money-card"><p class="tier">Subject&#8209;matter reviewer</p><p>A teacher or recent topper per exam track, to check every mock's questions and marking scheme are actually right before a student trusts them.</p></div>
+      <div class="money-card"><p class="tier">Early growth voice</p><p>Someone who can run the WhatsApp/Telegram outreach in Sheet 13 as an actual relationship, not a broadcast list.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sheet" id="s15" style="--tab:var(--green)">
+  <span class="sheet-tag">Sheet 15 / 16</span>
+  <div class="sheet-inner">
+    <p class="eyebrow">The name</p>
+    <h2 class="sheet-title">Goalyst, and two backups</h2>
+    <div class="ballot">
+      <div class="ballot-item rec">
+        <div><div class="name">Goalyst</div><p class="why">Goal + the &ldquo;-yst&rdquo; of catalyst/analyst &mdash; reads as &ldquo;the thing that makes goals happen.&rdquo; Short, easy to say and type, works as a domain and a handle.</p></div>
+        <span class="mark2">Recommended</span>
+      </div>
+      <div class="ballot-item">
+        <div><div class="name">GoalKarma</div><p class="why">Same core idea, more Indian-English flavor &mdash; the effort you put in catching up with you. Slightly longer, still clean.</p></div>
+        <span class="mark2" style="border-color:var(--ink-faint);color:var(--ink-faint);">Runner-up</span>
+      </div>
+      <div class="ballot-item">
+        <div><div class="name">GoalNudge</div><p class="why">Plainer and very literal &mdash; leans into the daily-nudge mechanic rather than the brand feel. Safe fallback.</p></div>
+        <span class="mark2" style="border-color:var(--ink-faint);color:var(--ink-faint);">Alternate</span>
+      </div>
+    </div>
+    <div class="correction"><strong>Rechecked as requested:</strong> Studently, which was on the first list, turned out to be already taken &mdash; a live app of that exact name is on Google Play. It's been dropped and replaced with GoalNudge above, which came back clear.</div>
+    <div class="avoidbox">
+      <p class="k">Worth avoiding</p>
+      <p>Sankalp, Manzil, Siddhi, Lakshya, ExamSaathi, Prepzy, GoalCraft, AimForge, Aimwell, and Pathlyst are all already in use by real apps or projects &mdash; checked directly before this list was written.</p>
+    </div>
+    <p class="footnote">This is a quick name-collision search, not a trademark or domain-availability check. Confirm both before locking one in.</p>
+  </div>
+</section>
+
+<section class="sheet closing" id="s16" style="--tab:var(--pink)">
+  <span class="sheet-tag">Sheet 16 / 16</span>
+  <div class="sheet-inner">
+    <p class="eyebrow">Next steps</p>
+    <h2 class="sheet-title">What I need from you to move this from plan to product</h2>
+    <div class="steplist">
+      <div class="step"><div class="box"></div><p><strong>Pick a name</strong> &mdash; Goalyst, one of the backups, or tell me to run a deeper check on something else.</p></div>
+      <div class="step"><div class="box"></div><p><strong>Confirm the target</strong> &mdash; a branded relaunch of the current build in about two weeks is realistic without any new infrastructure.</p></div>
+      <div class="step"><div class="box"></div><p><strong>Decide the money question</strong> &mdash; stay fully free while you build usage, or launch freemium from day one.</p></div>
+      <div class="step"><div class="box"></div><p><strong>Fill the team gaps</strong> &mdash; even one part-time design or content partner from Sheet 14 changes how fast Term 2 can move.</p></div>
+      <div class="step"><div class="box"></div><p><strong>Say go</strong> &mdash; and the rebrand build starts next: the new name, this visual identity carried into the actual app, same $0 infrastructure.</p></div>
+    </div>
+    <div class="signoff"><span>Prepared by Yasar Khan &middot; Draft v4</span><span id="todaystamp"></span></div>
+  </div>
+</section>
+
+<script>
+(function(){
+  "use strict";
+  var d = new Date();
+  var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  var stamp = document.getElementById("todaystamp");
+  if(stamp) stamp.textContent = months[d.getMonth()] + " " + d.getFullYear();
+
+  var links = Array.prototype.slice.call(document.querySelectorAll("#rail a"));
+  var sections = links.map(function(a){ return document.querySelector(a.getAttribute("href")); }).filter(Boolean);
+
+  if("IntersectionObserver" in window){
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(!entry.isIntersecting) return;
+        var id = "#" + entry.target.id;
+        links.forEach(function(a){ a.classList.toggle("active", a.getAttribute("href") === id); });
+      });
+    }, { rootMargin: "-45% 0px -50% 0px", threshold: 0 });
+    sections.forEach(function(s){ observer.observe(s); });
+  }
+})();
+</script>
