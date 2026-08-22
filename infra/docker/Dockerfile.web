@@ -1,5 +1,7 @@
 # Multi-stage Dockerfile for apps/web (Next.js).
 # Build context must be the repo root: docker build -f infra/docker/Dockerfile.web .
+# (Pipeline verification commit — confirms Docker Build & Push and the auto-triggered
+# Dev deploy actually run end-to-end through goalyst-build -> goalyst-deploy-dev.)
 
 FROM node:20-alpine AS deps
 WORKDIR /app
