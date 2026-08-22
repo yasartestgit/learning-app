@@ -53,7 +53,12 @@ pipeline {
 
     stage('Health Check') {
       steps {
-        sh 'curl -sf http://localhost:3001/api/health || (echo "Dev health check failed" && exit 1)'
+        // Not localhost: this `sh` step runs inside the Jenkins container itself
+        // (Docker-outside-of-Docker — the Dev container was created via the host's
+        // Docker socket, so its published port lands on the real host, not inside
+        // Jenkins' own network namespace). host.docker.internal is Docker Desktop's
+        // standard DNS name for reaching the real host from inside a container.
+        sh 'curl -sf http://host.docker.internal:3001/api/health || (echo "Dev health check failed" && exit 1)'
       }
     }
   }
