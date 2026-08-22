@@ -58,7 +58,18 @@ pipeline {
         // Docker socket, so its published port lands on the real host, not inside
         // Jenkins' own network namespace). host.docker.internal is Docker Desktop's
         // standard DNS name for reaching the real host from inside a container.
-        sh 'curl -sf http://host.docker.internal:3001/api/health || (echo "Dev health check failed" && exit 1)'
+        //
+        // Retries: `docker compose up -d` returns as soon as the container starts,
+        // not once Next.js has actually finished booting — a single immediate curl
+        // is a real, observed startup-timing race, not a hypothetical one.
+        sh '''
+          for i in $(seq 1 10); do
+            curl -sf http://host.docker.internal:3001/api/health && exit 0
+            sleep 2
+          done
+          echo "Dev health check failed after 10 attempts"
+          exit 1
+        '''
       }
     }
   }

@@ -58,7 +58,17 @@ pipeline {
 
     stage('Health Check') {
       steps {
-        sh 'curl -sf http://$PROD_HOST/api/health || (echo "Prod health check failed" && exit 1)'
+        // Retries: `docker compose up -d` returns as soon as the container starts,
+        // not once Next.js has actually finished booting — see the identical note
+        // in deploy-dev.Jenkinsfile, confirmed there as a real race, not hypothetical.
+        sh '''
+          for i in $(seq 1 10); do
+            curl -sf http://$PROD_HOST/api/health && exit 0
+            sleep 2
+          done
+          echo "Prod health check failed after 10 attempts"
+          exit 1
+        '''
       }
     }
   }
