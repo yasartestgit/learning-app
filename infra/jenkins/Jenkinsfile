@@ -33,7 +33,7 @@ pipeline {
     stage('Test') {
       steps {
         dir('apps/web') {
-          sh 'npm test -- --ci'
+          sh 'npm test'
         }
       }
     }
