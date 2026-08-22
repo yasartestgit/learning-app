@@ -11,7 +11,7 @@ docs/plan/          The product plan (Goalyst Product Plan, published as an arti
 docs/prd/           Feature-by-feature PRDs derived from the plan
 docs/architecture/  Tech stack, repo strategy, and deployment decisions
 infra/docker/       Dockerfile(s) and docker-compose for local + deployed containers
-infra/jenkins/      Jenkins pipeline definition
+infra/jenkins/      Jenkins pipelines — build.Jenkinsfile, deploy-dev.Jenkinsfile, deploy-prod.Jenkinsfile
 ```
 
 This is a **monorepo** — one product, one builder, one release cadence today. See `docs/architecture/repo-strategy.md` for why, and when to reconsider.

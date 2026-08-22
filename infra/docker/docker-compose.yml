@@ -3,11 +3,11 @@ services:
     build:
       context: ../..
       dockerfile: infra/docker/Dockerfile.web
-    image: goalyst-web:local
+    image: ${IMAGE:-goalyst-web:local}
     ports:
-      - "3000:3000"
+      - "${HOST_PORT:-3000}:3000"
     env_file:
-      - ../../apps/web/.env.local
+      - ${ENV_FILE:-../../apps/web/.env.local}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]

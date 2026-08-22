@@ -4,24 +4,26 @@ Staged to match the roadmap's cost ceilings in `docs/prd/00-overview.md`. Pipeli
 
 ## Pipeline shape (all terms)
 
-1. Push to `main` (or a merged PR) triggers Jenkins via a GitHub webhook.
-2. Jenkins runs: install → lint → test → `next build`.
-3. Jenkins builds a Docker image (`infra/docker/Dockerfile.web`) and tags it with the git SHA.
-4. Jenkins pushes the image to `ghcr.io/<org>/goalyst-web`.
-5. Jenkins deploys the new image to the current term's target (below) and runs a health check before considering the deploy complete.
+Three Jenkins jobs, not one — full detail in `jenkins-setup.md`. Summary:
+
+1. Push to `main` — `goalyst-build` picks it up (Poll SCM today; a webhook once Jenkins has a public address, see `jenkins-setup.md`).
+2. `goalyst-build` runs: install → lint → test → `next build` → Docker build (`infra/docker/Dockerfile.web`) → push to `ghcr.io/<org>/goalyst-web`, tagged by git SHA. This is the only job that ever builds an image.
+3. `goalyst-build` triggers `goalyst-deploy-dev` automatically, passing that image tag.
+4. `goalyst-deploy-dev` pulls and runs that exact tag against Dev, then health-checks it. It never rebuilds.
+5. `goalyst-deploy-prod` is triggered manually (that click is the production approval), pulls the same tag, deploys to the current term's target (below), and health-checks it.
 
 ## Term 1–2 — single VM
 
 - **Target:** One small VM — Oracle Cloud "Always Free" ARM instance (genuinely free) or a $6/mo DigitalOcean droplet if Oracle's free tier isn't available in your region.
 - **Runtime:** `docker compose up -d` on the VM, behind Caddy or Nginx for automatic TLS.
 - **Why:** Keeps Term 2's $0–20/mo ceiling intact. No managed-service bill yet.
-- **Jenkins deploy step:** SSH into the VM, pull the new image, `docker compose up -d`, verify the health check endpoint responds.
+- **`goalyst-deploy-prod`'s deploy step:** SSH into the VM, pull the new image, `docker compose up -d`, verify the health check endpoint responds.
 
 ## Term 3+ — managed containers
 
 - **Target:** AWS ECS Fargate or GCP Cloud Run (pick one — don't run both).
 - **Why:** Term 3 introduces the AI coach's usage-based cost; a managed, auto-scaling container platform means infra cost tracks actual usage instead of a fixed VM sized for peak load. No server patching either.
-- **Jenkins deploy step:** Push image to the registry, then call the provider's deploy API/CLI (`aws ecs update-service` or `gcloud run deploy`) with the new image tag.
+- **`goalyst-deploy-prod`'s deploy step:** call the provider's deploy API/CLI (`aws ecs update-service` or `gcloud run deploy`) with the image tag `goalyst-build` already pushed.
 
 ## Term 4 — add a CDN
 
