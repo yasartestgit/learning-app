@@ -70,7 +70,10 @@ pipeline {
     // deployed, so there's nothing worth building an image or triggering a deploy for.
     stage('Docker Build & Push') {
       when {
-        branch 'main'
+        // No `branch 'main'` check here — this is a plain Pipeline job (not
+        // Multibranch), pinned to main via the job's own SCM config, so
+        // env.BRANCH_NAME is never set and that condition would silently
+        // always evaluate false. The changeset check is what actually matters.
         anyOf {
           changeset "apps/web/**"
           changeset "infra/docker/**"
@@ -93,7 +96,10 @@ pipeline {
 
     stage('Trigger Dev Deploy') {
       when {
-        branch 'main'
+        // No `branch 'main'` check here — this is a plain Pipeline job (not
+        // Multibranch), pinned to main via the job's own SCM config, so
+        // env.BRANCH_NAME is never set and that condition would silently
+        // always evaluate false. The changeset check is what actually matters.
         anyOf {
           changeset "apps/web/**"
           changeset "infra/docker/**"
