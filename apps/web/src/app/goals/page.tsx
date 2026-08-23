@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { GoalCard } from "@/components/goals/GoalCard";
-import { deleteGoal, listGoals, updateMilestone } from "@/lib/goals/store";
+import { computeStreak } from "@/lib/goals/streaks";
+import { checkIn, deleteGoal, listGoals, updateMilestone } from "@/lib/goals/store";
 import type { Goal } from "@/lib/goals/types";
 
 export default function GoalsPage() {
@@ -32,10 +33,21 @@ export default function GoalsPage() {
     setGoals(await listGoals());
   }
 
+  async function handleCheckIn(goalId: string) {
+    await checkIn(goalId);
+    setGoals(await listGoals());
+  }
+
+  // PRD 05 FR2: a cross-goal longest-streak figure, not hidden inside any one card.
+  const bestStreak = Math.max(0, ...goals.map((g) => computeStreak(g.checkIns).longest));
+
   return (
     <div className="page-shell">
       <div className="page-head">
-        <h1>Your goals</h1>
+        <div>
+          <h1>Your goals</h1>
+          {bestStreak > 0 && <p className="eyebrow">Best streak: {bestStreak} days</p>}
+        </div>
         <Link href="/goals/new" className="btn btn-primary">
           New goal
         </Link>
@@ -66,6 +78,7 @@ export default function GoalsPage() {
             onRescheduleMilestone={(milestoneId, dueDate) =>
               handleReschedule(goal.id, milestoneId, dueDate)
             }
+            onCheckIn={() => handleCheckIn(goal.id)}
             onDelete={() => handleDelete(goal.id)}
           />
         ))}

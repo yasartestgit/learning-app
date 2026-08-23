@@ -64,6 +64,7 @@ export default function NewGoalPage() {
       targetDate,
       createdAt: new Date().toISOString(),
       milestones,
+      checkIns: [],
     });
     router.push("/goals");
   }

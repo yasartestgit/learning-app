@@ -13,7 +13,10 @@ function readAll(): Goal[] {
   if (!raw) return [];
   try {
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? (parsed as Goal[]) : [];
+    if (!Array.isArray(parsed)) return [];
+    // Backfill checkIns for goals saved before Streak & Habit Log existed.
+    type StoredGoal = Omit<Goal, "checkIns"> & { checkIns?: string[] };
+    return (parsed as StoredGoal[]).map((g) => ({ ...g, checkIns: g.checkIns ?? [] }));
   } catch {
     return [];
   }
@@ -35,6 +38,17 @@ export async function saveGoal(goal: Goal): Promise<void> {
 
 export async function deleteGoal(goalId: string): Promise<void> {
   writeAll(readAll().filter((g) => g.id !== goalId));
+}
+
+export async function checkIn(goalId: string): Promise<void> {
+  const goals = readAll();
+  const goal = goals.find((g) => g.id === goalId);
+  if (!goal) return;
+  const today = new Date().toISOString().slice(0, 10);
+  if (!goal.checkIns.includes(today)) {
+    goal.checkIns.push(today);
+  }
+  writeAll(goals);
 }
 
 export async function updateMilestone(

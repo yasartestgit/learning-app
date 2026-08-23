@@ -14,6 +14,7 @@ export type Goal = {
   targetDate: string; // ISO date, yyyy-mm-dd
   createdAt: string; // ISO datetime
   milestones: Milestone[];
+  checkIns: string[]; // ISO dates (yyyy-mm-dd) checked in on, unique
 };
 
 export const GOAL_CATEGORIES: { value: GoalCategory; label: string }[] = [

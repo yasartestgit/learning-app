@@ -342,6 +342,42 @@ a {
   transition: width 0.3s;
 }
 
+.streak-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.streak-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.streak-current {
+  font-size: 14.5px;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.streak-longest {
+  font-family: var(--font-mono), var(--font-mono-fallback);
+  font-size: 11px;
+  color: var(--ink-faint);
+  letter-spacing: 0.03em;
+}
+
+.streak-row .btn {
+  padding: 9px 16px;
+  font-size: 12px;
+}
+
 .milestone-list {
   list-style: none;
   margin: 6px 0 0;
