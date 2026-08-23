@@ -1,0 +1,51 @@
+import type { Goal, Milestone } from "./types";
+
+// localStorage-backed for now (no database yet — see docs/prd/00-overview.md).
+// Every function here is async on purpose, even though localStorage itself is
+// synchronous: swapping this module for a Supabase-backed implementation later
+// should be a storage-layer change, not a rewrite of every caller.
+
+const STORAGE_KEY = "goalyst:goals";
+
+function readAll(): Goal[] {
+  if (typeof window === "undefined") return [];
+  const raw = window.localStorage.getItem(STORAGE_KEY);
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? (parsed as Goal[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeAll(goals: Goal[]): void {
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(goals));
+}
+
+export async function listGoals(): Promise<Goal[]> {
+  return readAll().sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+}
+
+export async function saveGoal(goal: Goal): Promise<void> {
+  const goals = readAll();
+  goals.push(goal);
+  writeAll(goals);
+}
+
+export async function deleteGoal(goalId: string): Promise<void> {
+  writeAll(readAll().filter((g) => g.id !== goalId));
+}
+
+export async function updateMilestone(
+  goalId: string,
+  milestoneId: string,
+  changes: Partial<Pick<Milestone, "done" | "dueDate">>,
+): Promise<void> {
+  const goals = readAll();
+  const goal = goals.find((g) => g.id === goalId);
+  const milestone = goal?.milestones.find((m) => m.id === milestoneId);
+  if (!goal || !milestone) return;
+  Object.assign(milestone, changes);
+  writeAll(goals);
+}
