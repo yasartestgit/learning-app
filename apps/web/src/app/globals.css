@@ -21,6 +21,11 @@
   --red: #c23b26;
   --red-soft: rgba(194, 59, 38, 0.1);
 
+  --blue-glow: rgba(32, 88, 199, 0.24);
+  --pink-glow: rgba(200, 31, 104, 0.2);
+  --violet-glow: rgba(107, 63, 209, 0.2);
+  --shadow: 0 1px 2px rgba(33, 38, 43, 0.06), 0 20px 44px -20px rgba(33, 38, 43, 0.32);
+
   --font-display-fallback: system-ui, sans-serif;
   --font-body-fallback: Georgia, "Times New Roman", serif;
   --font-mono-fallback: ui-monospace, "SF Mono", Menlo, monospace;
@@ -52,6 +57,11 @@
     --red: #ff7a57;
     --red-soft: rgba(255, 122, 87, 0.16);
 
+    --blue-glow: rgba(108, 155, 255, 0.22);
+    --pink-glow: rgba(255, 111, 168, 0.18);
+    --violet-glow: rgba(177, 140, 255, 0.18);
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.45), 0 24px 50px -18px rgba(0, 0, 0, 0.75);
+
     color-scheme: dark;
   }
 }
@@ -72,13 +82,13 @@ html {
 
 body {
   min-height: 100%;
-  background: var(--bg);
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent 0,
-    transparent 35px,
-    var(--bg-line) 36px
-  );
+  background-color: var(--bg);
+  background-image: radial-gradient(1100px 650px at 6% -12%, var(--blue-glow) 0%, transparent 60%),
+    radial-gradient(950px 600px at 104% -6%, var(--pink-glow) 0%, transparent 58%),
+    radial-gradient(900px 550px at 50% 115%, var(--violet-glow) 0%, transparent 55%),
+    repeating-linear-gradient(to bottom, transparent 0, transparent 35px, var(--bg-line) 36px);
+  background-attachment: fixed, fixed, fixed, scroll;
+  background-repeat: no-repeat, no-repeat, no-repeat, repeat;
   color: var(--ink);
   font-family: var(--font-body), var(--font-body-fallback);
   -webkit-font-smoothing: antialiased;
@@ -132,6 +142,12 @@ a {
   align-items: center;
   padding: 20px clamp(20px, 5vw, 48px);
   border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .brand {
@@ -302,7 +318,8 @@ a {
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 22px 24px 18px;
-  border-top: 4px solid var(--accent, var(--blue));
+  border-top: 5px solid var(--accent, var(--blue));
+  box-shadow: var(--shadow);
 }
 
 .goal-card-head {
@@ -474,6 +491,7 @@ a {
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 36px 32px;
+  box-shadow: var(--shadow);
 }
 
 .step-label {
@@ -608,7 +626,8 @@ a {
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 22px 24px;
-  border-top: 4px solid var(--accent, var(--blue));
+  border-top: 5px solid var(--accent, var(--blue));
+  box-shadow: var(--shadow);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -777,6 +796,7 @@ a {
   padding: 28px 26px;
   margin-bottom: 24px;
   text-align: center;
+  box-shadow: var(--shadow);
 }
 
 .score-summary .score-value {
