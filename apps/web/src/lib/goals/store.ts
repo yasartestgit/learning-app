@@ -51,6 +51,21 @@ export async function checkIn(goalId: string): Promise<void> {
   writeAll(goals);
 }
 
+// PRD 04 (Coach Chat) FR2: only ever called after the student explicitly
+// confirms a "shift my dates" quick reply — never invoked automatically.
+export async function shiftRemainingMilestones(goalId: string, days: number): Promise<void> {
+  const goals = readAll();
+  const goal = goals.find((g) => g.id === goalId);
+  if (!goal) return;
+  for (const m of goal.milestones) {
+    if (m.done) continue;
+    const d = new Date(`${m.dueDate}T00:00:00.000Z`);
+    d.setUTCDate(d.getUTCDate() + days);
+    m.dueDate = d.toISOString().slice(0, 10);
+  }
+  writeAll(goals);
+}
+
 export async function updateMilestone(
   goalId: string,
   milestoneId: string,

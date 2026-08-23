@@ -862,3 +862,104 @@ a {
 .review-row .review-answers .your-answer.right {
   color: var(--green);
 }
+
+/* ---------- coach chat ---------- */
+.chat-shell {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 76px);
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 4px 2px 20px;
+}
+
+.chat-bubble-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chat-bubble-row.user {
+  align-items: flex-end;
+}
+
+.chat-bubble-row.coach {
+  align-items: flex-start;
+}
+
+.chat-bubble {
+  max-width: 70%;
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-size: 15px;
+  line-height: 1.5;
+  box-shadow: var(--shadow);
+}
+
+.chat-bubble p + p {
+  margin-top: 6px;
+}
+
+.chat-bubble.coach {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top-left-radius: 4px;
+  color: var(--ink);
+}
+
+.chat-bubble.user {
+  background: var(--blue);
+  color: #fff;
+  border-top-right-radius: 4px;
+}
+
+.chat-quick-replies {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chat-quick-replies button {
+  font-family: var(--font-mono), var(--font-mono-fallback);
+  font-size: 12px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--blue);
+  background: var(--blue-soft);
+  color: var(--blue);
+  cursor: pointer;
+}
+
+.chat-quick-replies button:hover {
+  background: var(--blue);
+  color: #fff;
+}
+
+.chat-input-row {
+  display: flex;
+  gap: 10px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.chat-input-row input {
+  flex: 1;
+  font-family: var(--font-body), var(--font-body-fallback);
+  font-size: 15px;
+  padding: 12px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.chat-input-row input:focus {
+  border-color: var(--blue);
+  outline: none;
+}
